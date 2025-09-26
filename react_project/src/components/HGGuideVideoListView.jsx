@@ -196,13 +196,17 @@ class HGGuideVideoListView extends Component {
         {/* 语言切换按钮 */}
         <div className="language-switcher">
           <button
-            className={`lang-btn ${this.state.language === "zh" ? "active" : ""}`}
+            className={`lang-btn ${
+              this.state.language === "zh" ? "active" : ""
+            }`}
             onClick={() => this.switchLanguage("zh")}
           >
             中文
           </button>
           <button
-            className={`lang-btn ${this.state.language === "en" ? "active" : ""}`}
+            className={`lang-btn ${
+              this.state.language === "en" ? "active" : ""
+            }`}
             onClick={() => this.switchLanguage("en")}
           >
             EN
@@ -290,14 +294,14 @@ class HGGuideVideoListView extends Component {
         </div>
 
         {/* 视频播放器 */}
-        {currentVideoUrl && (
+        {this.state.currentVideoUrl && (
           <div className="video-player-overlay">
             <div className="video-player-container">
               <button className="close-button" onClick={this.closeVideoPlayer}>
                 ×
               </button>
               <video
-                src={currentVideoUrl}
+                src={this.state.currentVideoUrl}
                 controls
                 autoPlay
                 className="video-player"
