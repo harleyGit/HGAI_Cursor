@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>新手引导 - 视频教程</title>
+    <link rel="stylesheet" href="hg_guide_video_list_view.css">
+    <style>
+        /* 内联样式，确保在嵌入时正常工作 */
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background-color: #f5f5f5;
+        }
+
+        /* 确保在iframe中正常显示 */
+        html,
+        body {
+            height: 100%;
+            overflow-x: hidden;
+        }
+
+        /* 嵌入模式样式 */
+        .embedded-mode {
+            padding-top: 0;
+        }
+
+        .embedded-mode .status-bar {
+            display: none;
+        }
+
+        .embedded-mode .navigation-bar {
+            position: relative;
+            top: 0;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="app"></div>
+
+    <script>
+        // 检测是否在iframe中
+        const isEmbedded = window !== window.top;
+
+        // 检测iOS WKWebView
+        const isIOSWKWebView = () => {
+            return window.webkit && window.webkit.messageHandlers;
+        };
+
+        // 多语言支持
+        const translations = {
+            zh: {
+                title: '新手引导',
+                commonQuestions: '常见问题',
+                videoTutorials: '视频教程',
+                bindDevice: '绑定设备',
+                unbindDevice: '解绑设备',
+                shareDevice: '分享设备',
+                connectNetworkCable: '连接网线',
+                newbieTutorial: '新手教学'
+            },
+            en: {
+                title: 'Newbie Guide',
+                commonQuestions: 'FAQ',
+                videoTutorials: 'Video Tutorials',
+                bindDevice: 'Bind Device',
+                unbindDevice: 'Unbind Device',
+                shareDevice: 'Share Device',
+                connectNetworkCable: 'Connect Network Cable',
+                newbieTutorial: 'Newbie Tutorial'
+            }
+        };
+
+        // 视频数据
+        const videoData = [
+            {
+                id: 1,
+                titleKey: 'bindDevice',
+                videoUrl: 'https://example.com/videos/bind_device.mp4',
+                thumbnail: 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMzIwIiBoZWlnaHQ9IjE4MCIgdmlld0JveD0iMCAwIDMyMCAxODAiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxyZWN0IHdpZHRoPSIzMjAiIGhlaWdodD0iMTgwIiBmaWxsPSIjRjBGOUZGIi8+CjxyZWN0IHg9IjAiIHk9IjAiIHdpZHRoPSIzMjAiIGhlaWdodD0iNDAiIGZpbGw9IiM2MzY2RjEiLz4KPHN2ZyB4PSIyMCIgeT0iMTAiIHdpZHRoPSIyMCIgaGVpZ2h0PSIyMCIgdmlld0JveD0iMCAwIDI0IDI0IiBmaWxsPSJub25lIj4KPHBhdGggZD0iTTEyIDJMMTMuMDkgOC4yNkwyMCA5TDEzLjA5IDE1Ljc0TDEyIDIyTDEwLjkxIDE1Ljc0TDQgOUwxMC45MSA4LjI2TDEyIDJaIiBmaWxsPSJ3aGl0ZSIvPgo8L3N2Zz4KPHN2ZyB4PSIxNDAiIHk9IjgwIiB3aWR0aD0iNDAiIGhlaWdodD0iNDAiIHZpZXdCb3g9IjAgMCAyNCAyNCIgZmlsbD0ibm9uZSI+CjxjaXJjbGUgY3g9IjEyIiBjeT0iMTIiIHI9IjEwIiBmaWxsPSJyZ2JhKDAsMCwwLDAuOCkiLz4KPHBhdGggZD0iTTEwIDhMMTYgMTJMMTAgMTZWNloiIGZpbGw9IndoaXRlIi8+Cjwvc3ZnPgo8L3N2Zz4K'
+            },
+            {
+                id: 2,
+                titleKey: 'unbindDevice',
+                videoUrl: 'https://example.com/videos/unbind_device.mp4',
+                thumbnail: 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMzIwIiBoZWlnaHQ9IjE4MCIgdmlld0JveD0iMCAwIDMyMCAxODAiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxyZWN0IHdpZHRoPSIzMjAiIGhlaWdodD0iMTgwIiBmaWxsPSIjRjBGOUZGIi8+CjxyZWN0IHg9IjAiIHk9IjAiIHdpZHRoPSIzMjAiIGhlaWdodD0iNDAiIGZpbGw9IiM2MzY2RjEiLz4KPHN2ZyB4PSIyMCIgeT0iMTAiIHdpZHRoPSIyMCIgaGVpZ2h0PSIyMCIgdmlld0JveD0iMCAwIDI0IDI0IiBmaWxsPSJub25lIj4KPHBhdGggZD0iTTEyIDJMMTMuMDkgOC4yNkwyMCA5TDEzLjA5IDE1Ljc0TDEyIDIyTDEwLjkxIDE1Ljc0TDQgOUwxMC45MSA4LjI2TDEyIDJaIiBmaWxsPSJ3aGl0ZSIvPgo8L3N2Zz4KPHN2ZyB4PSIxNDAiIHk9IjgwIiB3aWR0aD0iNDAiIGhlaWdodD0iNDAiIHZpZXdCb3g9IjAgMCAyNCAyNCIgZmlsbD0ibm9uZSI+CjxjaXJjbGUgY3g9IjEyIiBjeT0iMTIiIHI9IjEwIiBmaWxsPSJyZ2JhKDAsMCwwLDAuOCkiLz4KPHBhdGggZD0iTTEwIDhMMTYgMTJMMTAgMTZWNloiIGZpbGw9IndoaXRlIi8+Cjwvc3ZnPgo8L3N2Zz4K'
+            },
+            {
+                id: 3,
+                titleKey: 'shareDevice',
+                videoUrl: 'https://example.com/videos/share_device.mp4',
+                thumbnail: 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMzIwIiBoZWlnaHQ9IjE4MCIgdmlld0JveD0iMCAwIDMyMCAxODAiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxyZWN0IHdpZHRoPSIzMjAiIGhlaWdodD0iMTgwIiBmaWxsPSIjRjBGOUZGIi8+CjxyZWN0IHg9IjAiIHk9IjAiIHdpZHRoPSIzMjAiIGhlaWdodD0iNDAiIGZpbGw9IiM2MzY2RjEiLz4KPHN2ZyB4PSIyMCIgeT0iMTAiIHdpZHRoPSIyMCIgaGVpZ2h0PSIyMCIgdmlld0JveD0iMCAwIDI0IDI0IiBmaWxsPSJub25lIj4KPHBhdGggZD0iTTEyIDJMMTMuMDkgOC4yNkwyMCA5TDEzLjA5IDE1Ljc0TDEyIDIyTDEwLjkxIDE1Ljc0TDQgOUwxMC45MSA4LjI2TDEyIDJaIiBmaWxsPSJ3aGl0ZSIvPgo8L3N2Zz4KPHN2ZyB4PSIxNDAiIHk9IjgwIiB3aWR0aD0iNDAiIGhlaWdodD0iNDAiIHZpZXdCb3g9IjAgMCAyNCAyNCIgZmlsbD0ibm9uZSI+CjxjaXJjbGUgY3g9IjEyIiBjeT0iMTIiIHI9IjEwIiBmaWxsPSJyZ2JhKDAsMCwwLDAuOCkiLz4KPHBhdGggZD0iTTEwIDhMMTYgMTJMMTAgMTZWNloiIGZpbGw9IndoaXRlIi8+Cjwvc3ZnPgo8L3N2Zz4K'
+            },
+            {
+                id: 4,
+                titleKey: 'connectNetworkCable',
+                videoUrl: 'https://example.com/videos/connect_network_cable.mp4',
+                thumbnail: 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMzIwIiBoZWlnaHQ9IjE4MCIgdmlld0JveD0iMCAwIDMyMCAxODAiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxyZWN0IHdpZHRoPSIzMjAiIGhlaWdodD0iMTgwIiBmaWxsPSIjRjBGOUZGIi8+CjxyZWN0IHg9IjAiIHk9IjAiIHdpZHRoPSIzMjAiIGhlaWdodD0iNDAiIGZpbGw9IiM2MzY2RjEiLz4KPHN2ZyB4PSIyMCIgeT0iMTAiIHdpZHRoPSIyMCIgaGVpZ2h0PSIyMCIgdmlld0JveD0iMCAwIDI0IDI0IiBmaWxsPSJub25lIj4KPHBhdGggZD0iTTEyIDJMMTMuMDkgOC4yNkwyMCA5TDEzLjA5IDE1Ljc0TDEyIDIyTDEwLjkxIDE1Ljc0TDQgOUwxMC45MSA4LjI2TDEyIDJaIiBmaWxsPSJ3aGl0ZSIvPgo8L3N2Zz4KPHN2ZyB4PSIxNDAiIHk9IjgwIiB3aWR0aD0iNDAiIGhlaWdodD0iNDAiIHZpZXdCb3g9IjAgMCAyNCAyNCIgZmlsbD0ibm9uZSI+CjxjaXJjbGUgY3g9IjEyIiBjeT0iMTIiIHI9IjEwIiBmaWxsPSJyZ2JhKDAsMCwwLDAuOCkiLz4KPHBhdGggZD0iTTEwIDhMMTYgMTJMMTAgMTZWNloiIGZpbGw9IndoaXRlIi8+Cjwvc3ZnPgo8L3N2Zz4K'
+            }
+        ];
+
+        // 检测语言
+        const detectLanguage = () => {
+            const lang = navigator.language || navigator.userLanguage;
+            return lang.startsWith('zh') ? 'zh' : 'en';
+        };
+
+        // 渲染应用
+        function renderApp() {
+            const language = detectLanguage();
+            const t = translations[language];
+
+            const app = document.getElementById('app');
+            app.className = isEmbedded ? 'guide-container embedded-mode' : 'guide-container';
+
+            app.innerHTML = `
+                ${!isEmbedded ? `
+                <div class="status-bar">
+                    <div class="time">2:32</div>
+                    <div class="status-icons">
+                        <div class="signal-icon">📶</div>
+                        <div class="wifi-icon">📶</div>
+                        <div class="battery-icon">🔋</div>
+                    </div>
+                </div>
+                ` : ''}
+                
+                <div class="navigation-bar">
+                    <button class="back-button" onclick="handleBack()">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
+                            <path d="M15 18L9 12L15 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                        </svg>
+                    </button>
+                    <h1 class="title">${t.title}</h1>
+                    <button class="faq-button" onclick="handleFAQ()">${t.commonQuestions}</button>
+                </div>
+                
+                <div class="main-content">
+                    <div class="content-card">
+                        <h2 class="section-title">${t.videoTutorials}</h2>
+                        <div class="video-list">
+                            ${videoData.map(video => `
+                                <div class="video-item">
+                                    <div class="video-title">${t[video.titleKey]}</div>
+                                    <div class="video-preview" onclick="handleVideoClick('${video.videoUrl}', '${t[video.titleKey]}')">
+                                        <img src="${video.thumbnail}" alt="${t[video.titleKey]}" class="video-thumbnail" loading="lazy">
+                                        <div class="video-overlay">
+                                            <div class="tutorial-label">${t.newbieTutorial}</div>
+                                            <div class="play-button">
+                                                <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+                                                    <circle cx="12" cy="12" r="10" fill="rgba(0,0,0,0.8)"/>
+                                                    <path d="M10 8L16 12L10 16V8Z" fill="white"/>
+                                                </svg>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            `).join('')}
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="language-switcher">
+                    <button class="lang-btn ${language === 'zh' ? 'active' : ''}" onclick="switchLanguage('zh')">中文</button>
+                    <button class="lang-btn ${language === 'en' ? 'active' : ''}" onclick="switchLanguage('en')">EN</button>
+                </div>
+            `;
+        }
+
+        // 事件处理函数
+        function handleBack() {
+            if (isEmbedded) {
+                // 在嵌入模式中，通知父窗口
+                window.parent.postMessage({ type: 'back' }, '*');
+            } else {
+                window.history.back();
+            }
+        }
+
+        function handleFAQ() {
+            console.log('FAQ clicked');
+            // 可以在这里添加常见问题的处理逻辑
+        }
+
+        function handleVideoClick(videoUrl, title) {
+            if (isIOSWKWebView()) {
+                // 在iOS WKWebView中调用原生方法
+                if (window.webkit.messageHandlers.playVideo) {
+                    window.webkit.messageHandlers.playVideo.postMessage({
+                        videoUrl: videoUrl,
+                        title: title
+                    });
+                }
+            } else {
+                // 在网页中直接播放
+                showVideoPlayer(videoUrl, title);
+            }
+        }
+
+        function showVideoPlayer(videoUrl, title) {
+            const overlay = document.createElement('div');
+            overlay.className = 'video-player-overlay';
+            overlay.innerHTML = `
+                <div class="video-player-container">
+                    <button class="close-button" onclick="closeVideoPlayer()">×</button>
+                    <video src="${videoUrl}" controls autoplay class="video-player">
+                        您的浏览器不支持视频播放
+                    </video>
+                </div>
+            `;
+
+            document.body.appendChild(overlay);
+
+            // 添加关闭事件监听
+            overlay.addEventListener('click', (e) => {
+                if (e.target === overlay) {
+                    closeVideoPlayer();
+                }
+            });
+        }
+
+        function closeVideoPlayer() {
+            const overlay = document.querySelector('.video-player-overlay');
+            if (overlay) {
+                overlay.remove();
+            }
+        }
+
+        function switchLanguage(lang) {
+            localStorage.setItem('preferred-language', lang);
+            renderApp();
+        }
+
+        // 初始化应用
+        document.addEventListener('DOMContentLoaded', () => {
+            renderApp();
+        });
+
+        // 监听来自父窗口的消息
+        window.addEventListener('message', (event) => {
+            if (event.data.type === 'switchLanguage') {
+                switchLanguage(event.data.language);
+            }
+        });
+    </script>
+</body>
+
+</html>
