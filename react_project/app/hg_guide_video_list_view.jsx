@@ -184,7 +184,10 @@ class HGGuideVideoListView extends Component {
               <p>欢迎使用新手引导系统！</p>
               <p>点击下方按钮开始学习视频教程。</p>
             </div>
-            <button className="enter-guide-button" onClick={this.enterVideoList}>
+            <button
+              className="enter-guide-button"
+              onClick={this.enterVideoList}
+            >
               {t.enterGuide}
             </button>
           </div>
@@ -263,7 +266,12 @@ class HGGuideVideoListView extends Component {
                     <div className="video-overlay">
                       <div className="tutorial-label">{t.newbieTutorial}</div>
                       <div className="play-button">
-                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+                        <svg
+                          width="24"
+                          height="24"
+                          viewBox="0 0 24 24"
+                          fill="none"
+                        >
                           <circle
                             cx="12"
                             cy="12"
@@ -303,13 +311,17 @@ class HGGuideVideoListView extends Component {
         {/* 语言切换按钮 */}
         <div className="language-switcher">
           <button
-            className={`lang-btn ${this.state.language === "zh" ? "active" : ""}`}
+            className={`lang-btn ${
+              this.state.language === "zh" ? "active" : ""
+            }`}
             onClick={() => this.switchLanguage("zh")}
           >
             中文
           </button>
           <button
-            className={`lang-btn ${this.state.language === "en" ? "active" : ""}`}
+            className={`lang-btn ${
+              this.state.language === "en" ? "active" : ""
+            }`}
             onClick={() => this.switchLanguage("en")}
           >
             EN
